@@ -6,6 +6,7 @@ from scipy.stats import scoreatpercentile
 from scipy.stats import nanmedian
 from pytimecode import * # this avoids pytimecode.pytimecode.PyTimeCode craziness
 from OWL import *
+import csv
 
 
 def fivenum(v):
@@ -284,16 +285,43 @@ class OWLConnection:
         else:
             # already disconnected
             pass
-        
-        
-        
-wand = calibObject(objFile = 'wand.rb')
 
-owlServer = OWLConnection()
 
-check = checkObject(calibObject = wand)
-check.acquireData(owlServer)
-framesByMarkerer = check.summaryStats()
+def dictOfListsWriter(dict, filename):
+    # open file, establish headers
+    f = open(filename, 'wb')
+    w = csv.writer(f, dialect='excel-tab')
+    # write headers
+    w.writerow(dict.keys())
+        
+    
+    lengths = []
+    for key in dict.keys():
+        lengths.append(len(dict[key]))
+
+    if len(set(lengths)) != 1:
+        print("Error!")
+
+    n = lengths[0]-1
+
+    print(dict)
+
+    for x in range(0,n):
+        rw = []
+        for key in dict.keys():
+            print(dict[key][x])
+            rw.append(dict[key][x])
+        w.writerow(rw)        
+        
+        
+        
+## wand = calibObject(objFile = 'wand.rb')
+
+## owlServer = OWLConnection()
+
+## check = checkObject(calibObject = wand)
+## check.acquireData(owlServer)
+## framesByMarkerer = check.summaryStats()
 
 ##tc = OWLTimecode()
 ##
