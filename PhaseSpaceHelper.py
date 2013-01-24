@@ -95,9 +95,9 @@ class OWLTimecode:
             if tc != None:
                 # append the timecode to the timecodes list
                 timecodes.append(tc[4])
-                # if the list is longer than 1, then check to see if this timecode is different from the previous one (but is not 00:00:00:00 which sometimes gets put out)
+                # if the list is longer than 1, then check to see if this timecode is exactly one frame after the previous one (but is not 00:00:00:00 which sometimes gets put out, additionally some junk timecodes are sometimes spit out that are a truncation of the frame single digit.)
                 if len(timecodes) > 1:
-                    if timecodes[-1][0:11] != "00:00:00:00" and timecodes[-1][0:11] != timecodes[-2][0:11]:
+                    if timecodes[-1][0:11] != "00:00:00:00" and pytimecode.PyTimeCode('29.97', timecodes[-2][0:11]) pytimecode.PyTimeCode('29.97', timecodes[-1][0:11]) == pytimecode.PyTimeCode('29.97', "00:00:00:01"):
                         # stop the while loop
                         break
             else:
