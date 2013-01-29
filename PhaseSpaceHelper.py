@@ -95,9 +95,11 @@ class OWLTimecode:
             if tc != None:
                 # append the timecode to the timecodes list
                 timecodes.append(tc[4])
-                # if the list is longer than 1, then check to see if this timecode is exactly one frame after the previous one (but is not 00:00:00:00 which sometimes gets put out, additionally some junk timecodes are sometimes spit out that are a truncation of the frame single digit.)
+                # if the list is longer than 2, then check to see if this timecode is exactly one frame after the previous one (but is not 00:00:00:00 which sometimes gets put out, additionally some junk timecodes are sometimes spit out that are a truncation of the frame single digit.)
                 if len(timecodes) > 1:
-                    if timecodes[-1][0:11] != "00:00:00:00" and pytimecode.PyTimeCode('29.97', timecodes[-2][0:11]) pytimecode.PyTimeCode('29.97', timecodes[-1][0:11]) == pytimecode.PyTimeCode('29.97', "00:00:00:01"):
+##                    if timecodes[-1][0:11] != "00:00:00:00"  and timecodes[-1][0:11] != timecodes[-2][0:11]: # checks if tc is not all 0s, and -1 is not the same as -2
+##                    if timecodes[-1][0:11] != "00:00:00:00" and pytimecode.PyTimeCode('29.97', timecodes[-1][0:11]) - pytimecode.PyTimeCode('29.97', timecodes[-2][0:11]) == pytimecode.PyTimeCode('29.97', "00:00:00:01"): # does not work because time codes cannot be compared. Must turn to strings first.
+                    if timecodes[-1][0:11] != "00:00:00:00" and str(pytimecode.PyTimeCode('29.97', timecodes[-1][0:11]) - pytimecode.PyTimeCode('29.97', timecodes[-2][0:11])) == "00:00:00:01":
                         # stop the while loop
                         break
             else:
@@ -302,7 +304,7 @@ def dictOfListsWriter(dict, filename):
     if len(set(lengths)) != 1:
         print("Error!")
 
-    n = lengths[0]-1
+    n = lengths[0]
 
     print(dict)
 
@@ -317,17 +319,17 @@ def dictOfListsWriter(dict, filename):
         
 ## wand = calibObject(objFile = 'wand.rb')
 
-## owlServer = OWLConnection()
+owlServer = OWLConnection()
 
 ## check = checkObject(calibObject = wand)
 ## check.acquireData(owlServer)
 ## framesByMarkerer = check.summaryStats()
 
-##tc = OWLTimecode()
-##
-##time.sleep(1)
-##
-##tc.jamToOWL(owlServer)
+tc = OWLTimecode()
+
+time.sleep(1)
+
+tc.jamToOWL(owlServer)
 ##
 ##time.sleep(1)
 ##
