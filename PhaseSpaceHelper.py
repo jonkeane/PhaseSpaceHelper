@@ -88,8 +88,9 @@ class OWLTimecode:
     def grabOWL(self, tc_acc):
         # start with an empty list of timecodes
         timecodes = []
+        n = 0
         # iterated through at least 100 grabs. (this would be infinite?
-        while len(timecodes) < 100:
+        while n < 100:
             # grab the timecode from the timecode accumulator (CommDataAccumulator() from the phasespace API)
             tc = tc_acc.ParseTimecode(owlGetString(OWL_COMMDATA))
             if tc != None:
@@ -106,8 +107,14 @@ class OWLTimecode:
                 # if there is no time code print an error, and wait for one phasespace frame (there should be a more principled wait time, if no wait time there's a race.)
                 print("No timecode yet!")
                 time.sleep(1/480.)
+            n += 1
         # store and return the last timecode on the list.
-        timecode = timecodes[-1][0:11]        
+        try:
+            timecode = timecodes[-1][0:11]
+        except IndexError:
+            # if no timecodes have been accumulated, start at 00:00:00:00, this is probably a bad idea because no error will be thrown.
+            timecode = "00:00:00:00"
+            print("No timecode found.")
         return timecode
     
     def jamToOWL(self, OWLConn):
@@ -306,31 +313,9 @@ def dictOfListsWriter(dict, filename):
 
     n = lengths[0]
 
-    print(dict)
-
     for x in range(0,n):
         rw = []
         for key in dict.keys():
-            print(dict[key][x])
+##            print(dict[key][x])
             rw.append(dict[key][x])
         w.writerow(rw)        
-        
-        
-        
-## wand = calibObject(objFile = 'wand.rb')
-
-owlServer = OWLConnection()
-
-## check = checkObject(calibObject = wand)
-## check.acquireData(owlServer)
-## framesByMarkerer = check.summaryStats()
-
-tc = OWLTimecode()
-
-time.sleep(1)
-
-tc.jamToOWL(owlServer)
-##
-##time.sleep(1)
-##
-##tc.checkOWL(owlServer)
