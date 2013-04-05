@@ -2,10 +2,16 @@
 # a python script for testing the calibration of a phase space system.
 
 import sys, re, numpy, time
-from scipy.stats import scoreatpercentile
-from scipy.stats import nanmedian
+try:
+    from scipy.stats import scoreatpercentile
+    from scipy.stats import nanmedian
+except:
+    print("Can't import scipy. Stats will not work.")
 from pytimecode import * # this avoids pytimecode.pytimecode.PyTimeCode craziness
-from OWL import *
+try:
+    from OWL import *
+except:
+    print("Can't import OWL. There is no functionality for connecting to the Server.")
 import csv
 
 
@@ -264,7 +270,7 @@ class checkObject:
 
 class OWLConnection:
     """A connection to an OWL server"""
-    def __init__(self, server = "192.168.1.50", initFlags = OWL_SLAVE):
+    def __init__(self, server, initFlags):
         self.status = "disconnected"
         self.server = server
         self.initFlags = initFlags
